@@ -1,0 +1,20 @@
+# Argo CD "app of apps": a single root Application that manages the others,
+# so adding a workload is a Git commit, not a manual kubectl apply.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-root
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kratos0722/aws-eks-platform.git
+    targetRevision: main
+    path: argocd/apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

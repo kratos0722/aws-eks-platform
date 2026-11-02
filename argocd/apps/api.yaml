@@ -1,0 +1,22 @@
+# A workload Application managed by the root app. Argo CD keeps the cluster in
+# sync with the manifests under k8s/api in Git (GitOps).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kratos0722/aws-eks-platform.git
+    targetRevision: main
+    path: k8s/api
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: api
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
